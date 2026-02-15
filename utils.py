@@ -27,8 +27,6 @@ def create_new_member_welcome_card(member: discord.Member):
     # constants
     from globals import COMPUTER_OS
 
-    print(member.avatar.url)
-
     # Oversized image we crop
     hti = Html2Image(size=(1920, 1200))
     #hti.load_file('background.png')
@@ -39,7 +37,8 @@ def create_new_member_welcome_card(member: discord.Member):
 
     # sur les systèmes utilisant Unix, on doit désactiver le GUI du navigateur et cacher les scrollbars
     if COMPUTER_OS.casefold() == "UNIX".casefold():
-        hti.browser.flags = ["--no-sandbox", "--hide-scrollbars"]
+        # hti.browser.flags = ["--no-sandbox", "--hide-scrollbars"]
+        hti.browser.flags = ["--hide-scrollbars"]
 
     with open("member_join.html") as f:
         file_content = f.read()
