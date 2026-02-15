@@ -27,9 +27,15 @@ def create_new_member_welcome_card(member: discord.Member):
     # constants
     from globals import COMPUTER_OS
 
+    print(member.avatar.url)
+
     # Oversized image we crop
-    hti = Html2Image(size=(2000, 2000))
-    hti.load_file('background.png')
+    hti = Html2Image(size=(1920, 1200))
+    #hti.load_file('background.png')
+    hti.load_file('1.png')
+    hti.load_file('2.png')
+    hti.load_file('5.png')
+    hti.load_file('6.png')
 
     # sur les systèmes utilisant Unix, on doit désactiver le GUI du navigateur et cacher les scrollbars
     if COMPUTER_OS.casefold() == "UNIX".casefold():
@@ -57,7 +63,7 @@ def create_new_member_welcome_card(member: discord.Member):
     new_data = []
 
     for item in datas:
-        if item[0] == 255 and item[1] == 255 and item[2] == 254:
+        if item[0] == 54 and item[1] == 57 and item[2] == 63:
             new_data.append((255, 255, 255, 0))
         else:
             new_data.append(item)

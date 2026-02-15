@@ -10,30 +10,22 @@ from globals import *
 
 from LogLevel import LogLevel
 
-# Twitch API
-from twitchAPI.twitch import Twitch
-from twitchAPI.eventsub.webhook import EventSubWebhook
-
-from flask import Flask
-
-
-#app = Flask(__name__)
-
 bot_strings = strings["discord_bot"]
 
 
-#@app.route('/webhook/user_goes_live/<user_id>')
-#def user_goes_live(user_id):
-#    return "yay"
-
-
 def reload_strings():
+    """
+    Reloads the strings that could have been updated during the script execution.
+    """
     global bot_strings
     bot_strings = strings["discord_bot"]
 
 
 @bot.event
 async def on_ready():
+    """
+    Updates the current status of the bot, when fully loaded by discord.
+    """
     if STATUS.casefold() == "MAINT".casefold():
         await bot.change_presence(
             status=discord.Status.do_not_disturb,
@@ -48,22 +40,19 @@ async def on_ready():
             )
         )
 
-    # twitch = await Twitch('2fomyhujhfx0fzs9z78drx9j33hei2', 'b5tvxiggk13vjibitmz0jf3a7n0h3k')
-    # eventsub = EventSubWebhook("http://192.168.1.37", 5000, twitch)
-    # await eventsub.unsubscribe_all()
-    # eventsub.start()
-    # await eventsub.listen_stream_online("151111470", on_stream_start)
+    """
+    print("Syncing commands to global tree...")
+    bot.tree.copy_global_to(guild=discord.Object(id=DISCORD_GUILD_ID))
+    await bot.tree.sync(guild=discord.Object(id=DISCORD_GUILD_ID))
+    print("Synced commands to global tree")
+    """
 
     print(f"{bot_strings['on_ready']['ready_message']} | {bot_strings['version']}")
 
 
-async def on_stream_start():
-    print("ok")
-    pass
-
-
 @bot.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+    # Add the member role when rules are accepted
     if DISCORD_RULES_CHANNEL == payload.channel_id:
         guild = bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
@@ -74,6 +63,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
 @bot.event
 async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
+    # Remove the member role if the rules are not accepted
     if DISCORD_RULES_CHANNEL == payload.channel_id:
         guild = bot.get_guild(payload.guild_id)
         member = guild.get_member(payload.user_id)
@@ -179,8 +169,8 @@ async def setup_rules(ctx: commands.Context):
         color=discord.Color.from_rgb(245, 188, 243),
         description=bot_strings["rules"].replace("{server.name}", ctx.guild.name)
     )
-    embed.set_thumbnail(url="https://imgur.com/aoWxtH1.png")
-    bot_rules_message = await ctx.channel.send(embed=embed)
+    embed.set_thumbnail(url="https://i.imgur.com/40JzMOH.png")
+    bot_rules_message = await ctx.channel.last_message.edit(embed=embed)
     await bot_rules_message.add_reaction("✅")
 
     await ctx.message.delete()
